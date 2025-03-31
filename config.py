@@ -1,8 +1,9 @@
-import os
-from dotenv import load_dotenv
+import configparser
 
-load_dotenv()
+config = configparser.ConfigParser()
 
-MONGO_URI = os.getenv("MONGO_URI")
-DB_NAME = os.getenv("DB_NAME")
-JWT_SECRET = os.getenv("JWT_SECRET")
+config.read("settings.ini")
+
+MONGO_URI = config.get("database", "MONGO_URI", fallback="mongodb://localhost:27017")
+DB_NAME = config.get("database", "DB_NAME", fallback="ecommerce_db")
+JWT_SECRET = config.get("security", "JWT_SECRET", fallback="your_secret_key")

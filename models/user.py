@@ -1,17 +1,18 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
+
 
 class User(BaseModel):
     role: str
     name: str
-    email: EmailStr
+    email: str
     password: str
-    cartID: int | None
+    cart: dict[str, int] = {}
 
 class UserCreate(BaseModel):
     name: str
-    email: EmailStr
+    email: str
     password: str
 
 class UserLogin(BaseModel):
-    email: EmailStr
-    password: strs
+    email: str
+    password: str
