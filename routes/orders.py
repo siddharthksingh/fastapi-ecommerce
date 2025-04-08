@@ -18,13 +18,13 @@ async def place_order(user: dict = Depends(verify_token)):
 
     product_ids = [ObjectId(pid) for pid in cart.keys()]
 
-    # ✅ Step 2: Fetch product details
+    # Fetch product details
     products = await db.products.find({"_id": {"$in": product_ids}}).to_list(None)
 
     if len(products) != len(cart):
         raise HTTPException(status_code=400, detail="One or more products not found")
 
-    # ✅ Step 3: Verify stock availability & Calculate total cost
+    # Verify stock availability & Calculate total cost
     total_cost = 0
     update_operations = []
 
@@ -48,12 +48,12 @@ async def place_order(user: dict = Depends(verify_token)):
             }
         )
 
-    # ✅ Step 4: Deduct stock using bulk write
+    # Deduct stock using bulk write
     if update_operations:
         from pymongo import UpdateOne
         await db.products.bulk_write([UpdateOne(op["filter"], op["update"]) for op in update_operations])
 
-    # ✅ Step 5: Save order in `orders` collection
+    # Save order in `orders` collection
     order = {
         "user_email": email,
         "items": [{"product_id": pid, "quantity": qty} for pid, qty in cart.items()],
@@ -61,7 +61,7 @@ async def place_order(user: dict = Depends(verify_token)):
     }
     result = await db.orders.insert_one(order)
 
-    # ✅ Step 6: Clear the user's cart after placing the order
+    # Clear the user's cart after placing the order
     await db.users.update_one({"email": email}, {"$set": {"cart": {}}})
 
     return {"message": "Order placed successfully", "order_id": str(result.inserted_id)}
