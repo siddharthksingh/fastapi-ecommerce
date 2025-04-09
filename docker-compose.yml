@@ -7,8 +7,8 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URI = mongodb://mongo:27017
-      - DB_NAME = ecommerce_db
+      - MONGO_URI=mongodb://mongo:27017
+      - DB_NAME=ecommerce_db
     restart: always
   
   mongo:
