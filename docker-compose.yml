@@ -1,0 +1,19 @@
+services:
+  backend:
+    build: .
+    container_name: ecommerce-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI = mongodb://mongo:27017
+      - DB_NAME = ecommerce_db
+    restart: always
+  
+  mongo:
+    image: mongo:8.0.5
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    restart: always
